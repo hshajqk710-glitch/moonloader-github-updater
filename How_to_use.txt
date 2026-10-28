@@ -1,0 +1,59 @@
+Инструкция по подключению автообновления к Lua-скрипту (MoonLoader / MonetLoader)
+
+
+
+Шаг 1. Перенос кода
+
+Скопируйте весь блок кода автоапдейтера из шаблона (updater_template.lua) в ваш скрипт.
+
+
+
+Шаг 2. Настройка переменных
+
+В самом начале блока апдейтера укажите данные вашего репозитория:
+
+- SCRIPT_FILENAME: точное имя вашего файла на GitHub (например, 'myscript.lua')
+
+- GH_USER: ваш никнейм на GitHub
+
+- GH_REPO: название вашего репозитория
+
+
+
+Шаг 3. Добавление в главный цикл (main)
+
+В ваш бесконечный цикл `while true do` добавьте отслеживание нажатий локального диалога:
+
+
+
+local result, button = sampHasDialogRespond(UPDATE_DIALOG_ID)
+
+if result then
+
+    pendingUpdatePrompt = false 
+
+    promptedVersion = remoteVersion
+
+    if button == 1 then
+
+        updateAvailable = true
+
+        doUpdate()
+
+    else
+
+        sampAddChatMessage("[Updater] Обновление отложено.", 0xFFAA00)
+
+    end
+
+end
+
+
+
+Шаг 4. Публикация на GitHub
+
+1. Создайте в корне репозитория файл version.txt и напишите туда текущую версию (например, 1.0.0).
+
+2. Загрузите туда же файл вашего скрипта.
+
+3. При обновлениях просто меняйте версию в коде и в version.txt.
