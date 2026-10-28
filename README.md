@@ -32,3 +32,29 @@
 ```lua
 local SCRIPT_FILENAME = 'YourScript.lua' -- Точное имя вашего скрипта на GitHub
 local GH_USER, GH_REPO, GH_BRANCH = 'ВашНикGitHub', 'НазваниеРепозитория', 'main'
+
+
+### Шаг 2. Добавление проверки в главный цикл (`main`)
+В вашем бесконечном цикле `while true do` обязательно добавьте блок отслеживания нажатий на кнопки диалога обновления:
+
+```lua
+-- Ловим нажатия в локальном диалоге апдейтера
+local result, button = sampHasDialogRespond(UPDATE_DIALOG_ID)
+if result then
+    pendingUpdatePrompt = false 
+    promptedVersion = remoteVersion
+
+    if button == 1 then
+        updateAvailable = true
+        doUpdate() -- Запускает скачивание и установку
+    else
+        sampAddChatMessage("[Updater] Обновление отложено. Введите /update для установки.", 0xFFAA00)
+    end
+end
+
+###Шаг 3. Публикация релизов
+Залейте в корень вашего репозитория файл version.txt (внутри него должна быть только строка с текущей версией, например: 1.0.0).
+
+Залейте туда же актуальный файл вашего скрипта (например, YourScript.lua).
+
+При выходе обновления: измените версию в .lua файле, сделайте коммит на GitHub, а затем обновите цифру в version.txt. Скрипт у пользователей автоматически обнаружит разницу и предложит обновление!
